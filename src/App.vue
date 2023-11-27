@@ -1,47 +1,39 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import ImageUploader from './components/ImageUploader.vue';
+import Map from './components/Map.vue';
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+	<main>
+		<h1 class="w-full text-center text-white text-4xl h-[20vh]">Name here</h1>
+		<div class="flex w-full p-5 space-x-5 h-[80vh]">
+			<div class="w-1/2">
+				<ImageUploader @sendData="receiveData"/>
+			</div>
+			<div class="w-1/2">
+				<Map :markers="markers" class="w-full" />
+			</div>
+		</div>
+	</main>
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+<script lang="ts">
+export default {
+	data() {
+		return {
+			markers: []
+		};
+	},
+	methods: {
+		receiveData(markers) {
+		this.markers = markers;
+		console.log(this.markers);
+		
+		}
+	},
+	components: {
+		ImageUploader,
+		Map,
+	},
+};
+</script>
