@@ -1,6 +1,11 @@
 <template>
 	<div>
 		<div class="inputs">
+
+			<button v-if="markers.length > 0" @click="addRoutingControl()"  class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center mb-2">
+				<svg xmlns="http://www.w3.org/2000/svg" height="16" width="12" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z"/></svg>
+				<span class="px-2">Show route</span>
+			</button>
 			<!--
 			<label for="latitude">Latitude:</label>
 			<input v-model="latitude" id="latitude" type="text" placeholder="Enter latitude" />
@@ -19,7 +24,9 @@
 <script>
 
 import L from 'leaflet';
-	import 'leaflet/dist/leaflet.css';
+import 'leaflet/dist/leaflet.css';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine.css';
+import 'leaflet-routing-machine/dist/leaflet-routing-machine';
 
 export default {
 	props: {
@@ -38,6 +45,7 @@ export default {
 	},
 	watch: {
 		markers(newData) {
+		this.showMap();
 			for (var i = 0; i < this.markersLayer.length; i++) {
 				this.mapInstance.removeLayer(this.markersLayer[i]);
 			}
@@ -92,12 +100,34 @@ export default {
 				popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
 			});
 
-			let m = L.marker([marker.exifData.latitude, marker.exifData.longitude], {icon: greenIcon})
-			.bindPopup("<b>"+marker.name+"</b><br>"+marker.exifData.GPSTimeStamp)
-			.addTo(this.mapInstance);
-
-			this.markersLayer.push(m);
+			if(typeof marker.exifData.latitude !== 'undefined' && typeof marker.exifData.longitude !== 'undefined'){
+				let hours = null;
+				if(typeof marker.exifData.GPSTimeStamp !== 'undefined'){
+					hours = "<br>" + marker.exifData.GPSTimeStamp;
+				}
+				let m = L.marker([marker.exifData.latitude, marker.exifData.longitude])
+				.bindPopup("<b>" + marker.name + "</b>" + hours)
+				.addTo(this.mapInstance);
+				
+				this.markersLayer.push(m);
+			}
 		},
+		addRoutingControl() {
+			/*let aaa = [
+				{ lat: 51.5, lng: -0.09 },
+				{ lat: 51.51, lng: -0.1 },
+				{ lat: 51.52, lng: -0.11 }
+			]*/
+/*
+			this.markers.forEach(marker => {
+				L.marker([marker.exifData.latitude, marker.exifData.longitude]).addTo(this.mapInstance);
+			});*/
+			
+			L.Routing.control({
+				waypoints: this.markers.map(marker => L.latLng(marker.exifData.latitude, marker.exifData.longitude)),
+				routeWhileDragging: true,
+			}).addTo(this.mapInstance);
+		}
 	},
 };
 </script>
