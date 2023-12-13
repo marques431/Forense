@@ -4,8 +4,8 @@ import Map from './components/Map.vue';
 </script>
 
 <template>
-	<main>
-		<h1 class="w-full text-center text-white text-4xl h-[20vh]">Name here</h1>
+	<main class="flex flex-col items-center justify-center h-screen">
+		<h1 class="text-white text-4xl">Forensic Metadata Analysis</h1>
 		<div class="flex w-full p-5 space-x-5 h-[80vh]">
 			<div class="w-1/2">
 				<ImageUploader @sendData="receiveData"/>

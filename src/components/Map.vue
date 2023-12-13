@@ -45,10 +45,10 @@ export default {
 	},
 	watch: {
 		markers(newData) {
-		this.showMap();
 			for (var i = 0; i < this.markersLayer.length; i++) {
 				this.mapInstance.removeLayer(this.markersLayer[i]);
 			}
+			this.showMap();
 			this.markersLayer = [];
 
 			newData.forEach((marker) => {
